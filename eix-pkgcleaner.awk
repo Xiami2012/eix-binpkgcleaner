@@ -41,10 +41,9 @@ BEGIN \
 	if (scan_slot == "") scan_slot = 1
 	scan_keyword = ENVIRON["SCAN_KEYWORD"]
 	if (scan_keyword == "") scan_keyword = 1
-	pkgdir = ENVIRON["PKGDIR"]
-	if (pkgdir == "") pkgdir = "/usr/portage/packages"
 
 	# Internal vars
+	"portageq pkgdir" | getline pkgdir
 	state = 0
 }
 

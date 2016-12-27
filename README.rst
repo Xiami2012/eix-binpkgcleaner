@@ -100,7 +100,7 @@ In this mode, output all files to remove with full paths.
 
 Environment Variables
 ---------------------
-``DEBUG=1 SCAN_SLOT=0 SCAN_KEYWORD=0 PKGDIR=/data/binpkg ./eix-pkgcleaner.sh``
+``DEBUG=1 SCAN_SLOT=0 SCAN_KEYWORD=0 ./eix-pkgcleaner.sh``
 
 DEBUG
 ^^^^^
@@ -128,15 +128,6 @@ Default value: 1
 Description: If set to 0, all versions are regarded to have keyword ARCH (stable).
 Taking dev-vcs/git above as example, after cleanup, only 9999-r3 preserved.
 It's somehow the same as setting ACCEPT_KEYWORDS="**".
-
-
-PKGDIR
-^^^^^^
-Accept values: string
-
-Default value: /usr/portage/packages
-
-Description: Where you save the binary packages.
 
 ****
 TODO
