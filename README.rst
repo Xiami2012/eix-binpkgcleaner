@@ -5,13 +5,18 @@ eix-pkgcleaner
 ************
 Introduction
 ************
-eix-pkgcleaner is a tool to do a job like eclean-pkg(from gentoolkit) but (may?) somehow smarter.
+eix-pkgcleaner is a tool to do a job like eclean-pkg(from gentoolkit) but smarter.
 
+It does clean jobs by 2 stages.
+
+Stage 1
+=======
 For every package which have binary packages, by default,
-it preserves all binary packages with latest version in each slot and each keyword [#keyword]_ .
+it outputs all binary packages with latest version in each slot and each keyword [#keyword]_ ,
+filtering out all lower versions.
 
 Example (dev-vcs/git)
-=====================
+---------------------
 Imagine you have binary versions below:
 
 +----------+------+-------+--------+------+
@@ -34,7 +39,7 @@ Imagine you have binary versions below:
 | 9999-r3  | 0    |       |        | o    |
 +----------+------+-------+--------+------+
 
-After cleanup:
+After stage 1:
 
 ========== ====== ======= ======== ======
  Version    Slot   amd64   ~amd64   \*\*
@@ -45,7 +50,7 @@ After cleanup:
 ========== ====== ======= ======== ======
 
 Example (dev-lang/python)
-=========================
+-------------------------
 Imagine you have binary versions below:
 
 =========== ========== ======= ======== ======
@@ -58,7 +63,7 @@ Imagine you have binary versions below:
  3.5.2       3.5/3.5m           o
 =========== ========== ======= ======== ======
 
-After cleanup:
+After stage 1:
 
 =========== ========== ======= ======== ======
  Version     Slot       amd64   ~amd64   \*\*
@@ -68,13 +73,28 @@ After cleanup:
  3.5.2       3.5/3.5m           o
 =========== ========== ======= ======== ======
 
+Stage 2
+=======
+Scan every binary package from stage 1, filtering out binary packages in 2 cases:
+
+1. ebuild file in binary package and portage tree differs (ignoring KEYWORDS change)
+2. has USE flags as same as a binary package scanned before (same PF, e.g. uwsgi-2.0.13-r1)
+
 ******************
 Why not eclean-pkg
 ******************
 For one package, I mean, a category/package tuple,
 eclean-pkg preserves all binary packages that its corresponding ebuild exists in portage tree,
-and with -d it cleans out all binary packages except those matching the installed version exactly
-(exactly means only one xpak for the installed version preserved afterwards).
+**regardless** of whether whose ebuild file has been updated in portage tree.
+
+eclean-pkg has poor support for FEATURE=binpkg-multi-instance.
+Though ``binpkg-multi-instance`` makes it possible to save multiple binary packages
+with different USE flags for one version, which with *same* USE flags should be cleaned out.
+eclean-pkg doesn't.
+
+with -d eclean-pkg can work aggressive. It cleans out all binary packages except
+those matching the *installed* version *exactly*\ .
+(exactly means only one tbz2 or xpak for the installed version left afterwards).
 
 For me, lower version binary packages in same slot and keyword are much less reused.
 And with -d, it's much far away from my needs since I may install a package just removed yesterday
@@ -98,9 +118,13 @@ Running in non-interactive mode
 
 In this mode, output all files to remove with full paths.
 
+Arguments
+---------
+- -u: Run eix-update first
+
 Environment Variables
 ---------------------
-``DEBUG=1 SCAN_SLOT=0 SCAN_KEYWORD=0 PKGDIR=/data/binpkg ./eix-pkgcleaner.sh``
+``DEBUG=1 SCAN_SLOT=0 SCAN_KEYWORD=0 ./eix-pkgcleaner.sh``
 
 DEBUG
 ^^^^^
@@ -128,21 +152,6 @@ Default value: 1
 Description: If set to 0, all versions are regarded to have keyword ARCH (stable).
 Taking dev-vcs/git above as example, after cleanup, only 9999-r3 preserved.
 It's somehow the same as setting ACCEPT_KEYWORDS="**".
-
-
-PKGDIR
-^^^^^^
-Accept values: string
-
-Default value: /usr/portage/packages
-
-Description: Where you save the binary packages.
-
-****
-TODO
-****
-1. Clean duplicate binary packages with exactly same USE flag in latest version.
-2. Clean binary packages not reusable due to ebuild changes (RDEPEND or USE changed).
 
 ********
 Untested
