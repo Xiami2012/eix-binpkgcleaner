@@ -5,8 +5,13 @@
 # Author: Xiami <i@f2light.com>
 #
 
+cleanup() {
+	rm -f ${tmpfile:?tmpfile_null}
+}
+
 e() {
 	echo "Aborted" >&2
+	cleanup
 	exit 1
 }
 
@@ -19,6 +24,8 @@ wd=`dirname $prog`
 
 tmpfile=`mktemp /tmp/eix-pkgcleaner.XXX`
 pkgdir=`portageq pkgdir`
+
+trap "cleanup; exit 1" INT TERM
 
 # Support only 1 optional argument, do not use getopt now
 if [ "$1" == "-u" ]; then
@@ -34,9 +41,6 @@ echo "Filtering binary packages..." >&2
 ls `eix --binary -xl | awk -f $wd/eix-pkgcleaner.awk` | sort > $tmpfile || e
 fillst=`diff -u <(find ${pkgdir} -type f | sort) $tmpfile |
 	tail -n +3 | grep -e "^-" | sed -e "s/^-//"`
-
-# Early remove tmpfile to avoid trap SIGINT when waiting for stdin
-rm -f $tmpfile
 
 if isatty; then
 	if [ -n "$fillst" ]; then
@@ -55,3 +59,5 @@ if isatty; then
 else
 	echo "$fillst"
 fi
+
+cleanup
