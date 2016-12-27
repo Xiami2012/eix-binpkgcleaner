@@ -1,11 +1,11 @@
-##############
-eix-pkgcleaner
-##############
+#################
+eix-binpkgcleaner
+#################
 
 ************
 Introduction
 ************
-eix-pkgcleaner is a tool to do a job like eclean-pkg(from gentoolkit) but smarter.
+eix-binpkgcleaner is a tool to do a job like eclean-pkg(from gentoolkit) but smarter.
 
 It does clean jobs by 2 stages.
 
@@ -107,14 +107,14 @@ Usage
 
 Quick Tutorial
 ==============
-Run ``./eix-pkgcleaner.sh``
+Run ``./eix-binpkgcleaner.sh``
 
 More
 ====
 
 Running in non-interactive mode
 -------------------------------
-``./eix-pkgcleaner.sh | less``
+``./eix-binpkgcleaner.sh | less``
 
 In this mode, output all files to remove with full paths.
 
@@ -124,7 +124,7 @@ Arguments
 
 Environment Variables
 ---------------------
-``DEBUG=1 SCAN_SLOT=0 SCAN_KEYWORD=0 ./eix-pkgcleaner.sh``
+``DEBUG=1 SCAN_SLOT=0 SCAN_KEYWORD=0 ./eix-binpkgcleaner.sh``
 
 DEBUG
 ^^^^^

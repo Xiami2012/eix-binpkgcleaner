@@ -1,6 +1,6 @@
 #!/usr/bin/gawk -f
 #
-# Gentoo obsolete packages smart cleaner awk script
+# Gentoo obsolete binary packages smart cleaner awk script
 #
 # Only preserve latest version packages in each slot
 #
@@ -12,7 +12,7 @@
 #
 # Usage:
 #   List file patterns to preserve:
-#     ls `eix --binary -xl | awk -f ./eix-pkgcleaner.awk`
+#     ls `eix --binary -xl | awk -f ./eix-binpkgcleaner.awk`
 #
 # Author: Xiami <i@f2light.com>
 #

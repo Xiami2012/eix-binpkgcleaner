@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Gentoo obsolete packages smart cleaner
+# Gentoo obsolete binary packages smart cleaner
 #
 # Author: Xiami <i@f2light.com>
 #
@@ -65,10 +65,10 @@ xpak_hash() {
 prog=`realpath $BASH_SOURCE`
 wd=`dirname $prog`
 
-tmpfile=`mktemp /tmp/eix-pkgcleaner.XXX` || e
-tmpfile2=`mktemp /tmp/eix-pkgcleaner.XXX` || e
-tmp_rpcache=`mktemp /dev/shm/eix-pkgcleaner.XXX` || e
-tmpdir=`mktemp -d /tmp/eix-pkgcleaner.XXX` || e
+tmpfile=`mktemp /tmp/eix-binpkgcleaner.XXX` || e
+tmpfile2=`mktemp /tmp/eix-binpkgcleaner.XXX` || e
+tmp_rpcache=`mktemp /dev/shm/eix-binpkgcleaner.XXX` || e
+tmpdir=`mktemp -d /tmp/eix-binpkgcleaner.XXX` || e
 pkgdir=`portageq pkgdir`
 
 trap "cleanup; exit 1" INT TERM
@@ -85,7 +85,7 @@ fi
 
 echo "Filtering binary packages (low version in slot * keyword)..." >&2
 # Fetch what to be preserved filtered by slot and keyword
-ls `eix --binary -xl | awk -f $wd/eix-pkgcleaner.awk` | sort > $tmpfile || e
+ls `eix --binary -xl | awk -f $wd/eix-binpkgcleaner.awk` | sort > $tmpfile || e
 
 echo "Filtering binary packages (ebuild non-keyword update + duplicate USE binpkg)..." >&2
 while read -r; do
