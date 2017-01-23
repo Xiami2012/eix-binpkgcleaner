@@ -158,5 +158,10 @@ Untested
 ********
 1. Overlay
 
+****
+TODO
+****
+1. When duplicate binpkg with same USE flag exists, preserve the latest.
+
 .. rubric:: Footnotes
 .. [#keyword] Keywords in ebuild. Will not be influenced by per-package accept_keywords but global ACCEPT_KEYWORDS.

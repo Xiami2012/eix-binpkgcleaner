@@ -54,8 +54,8 @@ xpak_hash() {
 	# Let shell auto-complete this :)
 	ebuild_in_tree=`ls $portdir/$(<$tmpdir/CATEGORY)/*/$(<$tmpdir/PF).ebuild`
 	ebuild_in_binpkg=`ls $tmpdir/*.ebuild`
-	# Ignore keywords changes
-	diff -q <(grep -ve "KEYWORDS=" $ebuild_in_binpkg) <(grep -ve "KEYWORDS=" $ebuild_in_tree) > /dev/null || return 1
+	# Ignore keywords and comment changes
+	diff -q <(grep -vEe "^#|KEYWORDS=" $ebuild_in_binpkg) <(grep -vEe "^#|KEYWORDS=" $ebuild_in_tree) > /dev/null || return 1
 	# Print CPF and USE hash (SHA256 truncated to 128-bit)
 	echo -n "$(<$tmpdir/CATEGORY)/$(<$tmpdir/PF) "
 	sha256sum $tmpdir/USE | head -c 32
@@ -104,7 +104,7 @@ while read -r; do
 		declare -A use_hashes
 		use_hashes[${cpv_usehash[1]}]=1
 		echo $REPLY
-	elif [ "${use_hashes[${cpv_usehash[1]}]}" -eq 1 ]; then
+	elif [ "${use_hashes[${cpv_usehash[1]}]}" = 1 ]; then
 		echo "${REPLY#$pkgdir/} deprecated due to duplicate USE binpkg exists" >&2
 	else
 		use_hashes[${cpv_usehash[1]}]=1
