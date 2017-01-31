@@ -88,32 +88,32 @@ echo "Filtering binary packages (low version in slot * keyword)..." >&2
 ls `eix --binary -xl | awk -f $wd/eix-binpkgcleaner.awk` | sort > $tmpfile || e
 
 echo "Filtering binary packages (ebuild non-keyword update + duplicate USE binpkg)..." >&2
+# To save packages win
+declare -A pkg_hashes
 while read -r; do
 	# Packages, Packages.gz
 	if [ "${REPLY%%.tbz2}" = "$REPLY" ] && [ "${REPLY%%.xpak}" = "$REPLY" ]; then
 		echo $REPLY
 		continue
 	fi
-	if ! cpv_usehash=(`xpak_hash $REPLY`); then
+	# Regard all non-zero retvals as ebuild update now
+	if ! cpv_usehash=`xpak_hash $REPLY`; then
 		echo "${REPLY#$pkgdir/} deprecated due to ebuild update" >&2
 		continue
 	fi
-	if [ "$cpv" != "${cpv_usehash[0]}" ]; then
-		cpv=${cpv_usehash[0]}
-		unset use_hashes
-		declare -A use_hashes
-		use_hashes[${cpv_usehash[1]}]=1
-		echo $REPLY
-	elif [ "${use_hashes[${cpv_usehash[1]}]}" = 1 ]; then
-		echo "${REPLY#$pkgdir/} deprecated due to duplicate USE binpkg exists" >&2
-	else
-		use_hashes[${cpv_usehash[1]}]=1
-		echo $REPLY
+	if [ -n "${pkg_hashes[${cpv_usehash}]}" ]; then
+		echo "${pkg_hashes[${cpv_usehash}]#$pkgdir/} deprecated due to duplicate USE binpkg exists" >&2
 	fi
+	pkg_hashes[${cpv_usehash}]="$REPLY"
 done < $tmpfile > $tmpfile2
+unset cpv_usehash
+for i in "${pkg_hashes[@]}"; do
+	echo "$i" >> $tmpfile2
+done
+unset pkg_hashes
 
 # Convert to file list for rm
-fillst=`diff -u <(find ${pkgdir} -type f | sort) $tmpfile2 |
+fillst=`diff -u <(find ${pkgdir} -type f | sort) <(sort $tmpfile2) |
 	tail -n +3 | grep -e "^-" | sed -e "s/^-//"`
 
 if isatty; then

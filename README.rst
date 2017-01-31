@@ -78,7 +78,7 @@ Stage 2
 Scan every binary package from stage 1, filtering out binary packages in 2 cases:
 
 1. ebuild file in binary package and portage tree differs (ignoring KEYWORDS change)
-2. has USE flags as same as a binary package scanned before (same PF, e.g. uwsgi-2.0.13-r1)
+2. has USE flags as same as a binary package scanned after (same PF, e.g. uwsgi-2.0.13-r1)
 
 ******************
 Why not eclean-pkg
@@ -157,11 +157,6 @@ It's somehow the same as setting ACCEPT_KEYWORDS="**".
 Untested
 ********
 1. Overlay
-
-****
-TODO
-****
-1. When duplicate binpkg with same USE flag exists, preserve the latest.
 
 .. rubric:: Footnotes
 .. [#keyword] Keywords in ebuild. Will not be influenced by per-package accept_keywords but global ACCEPT_KEYWORDS.
