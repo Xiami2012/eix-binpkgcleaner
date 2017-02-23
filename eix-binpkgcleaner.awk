@@ -94,7 +94,12 @@ state == 2 && /^ {7}.*\{(tbz2|xpak)/ \
 		}
 	}
 	# Fetch slot
-	$0 = substr($0, 6)
+	if (substr($0, 1, 1) != " ")
+	{
+		# Simulate shift 1
+		for (i_shf = 1; i_shf < NF; i_shf++)
+			$i_shf = $(i_shf + 1)
+	}
 	match($2, /\(([^/]*)(\/.*)?\)/, result)
 	if (scan_slot == 1 && result[1, "start"])
 	{
