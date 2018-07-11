@@ -55,8 +55,8 @@ xpak_hash() {
 	ebuild_in_tree=`ls $portdir/$(<$tmpdir/CATEGORY)/*/$(<$tmpdir/PF).ebuild`
 	ebuild_in_binpkg=`ls $tmpdir/*.ebuild`
 	# Ignore keywords and package-useless changes
-	local ebuild_filter="^#|^[ 	]*$|(KEYWORDS|HOMEPAGE|DESCRIPTION)="
 	diff -q <(grep -vEe "$ebuild_filter" $ebuild_in_binpkg) <(grep -vEe "$ebuild_filter" $ebuild_in_tree) > /dev/null || return 1
+	local ebuild_filter="^#|^[ 	]*$|(KEYWORDS|HOMEPAGE|DESCRIPTION)=\".*\""
 	# Print CPF and USE hash (SHA256 truncated to 128-bit)
 	echo -n "$(<$tmpdir/CATEGORY)/$(<$tmpdir/PF) "
 	sha256sum $tmpdir/USE | head -c 32
