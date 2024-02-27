@@ -2,6 +2,31 @@
 eix-binpkgcleaner
 #################
 
+************************
+PROJECT ARCHIVING NOTICE
+************************
+
+This project is no longer maintained for the following reasons:
+
+1. This project is implemented by purely text processing on the output of ``eix`` .
+   It is relatively hard to achieve more features gracefully.
+
+   For example: a binary package may be effective when using ``emerge --usepkg`` ,
+   but it may be excluded by ``emerge --usepkg --changed-deps`` .
+   And it is not easy to implement this check gracefully (maybe reading ``md5-cache`` ?).
+
+2. I currently use ``eclean-pkg --unique-use --changed-deps`` instead of this tool.
+
+   It solves the above problem with ``--changed-deps``.
+   (Make sure you have ``>=app-portage/gentoolkit-0.6.4``, otherwise you may encounter `bugs <https://bugs.gentoo.org/921679>`_ .)
+
+   Its ``--unique-use`` also achieves one of the original goals of this project.
+
+   Although it does not have the function of keeping only the latest version of the package in each slot,
+   packages' dependencies change quicker than I expected, so ``--changed-deps`` partially addressed the issue.
+
+For those of you who have tried this tool, I feel very happy and send you my sincere thanks.
+
 ************
 Introduction
 ************

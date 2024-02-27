@@ -4,6 +4,8 @@
 #
 # Author: Xiami <i@f2light.com>
 #
+# TODO: corrupt tbz2 file
+# TODO: find the most stable version
 
 cleanup() {
 	rm -f ${tmpfile:?tmpfile_null}
@@ -55,8 +57,10 @@ xpak_hash() {
 	ebuild_in_tree=`ls $portdir/$(<$tmpdir/CATEGORY)/*/$(<$tmpdir/PF).ebuild`
 	ebuild_in_binpkg=`ls $tmpdir/*.ebuild`
 	# Ignore keywords and package-useless changes
-	diff -q <(grep -vEe "$ebuild_filter" $ebuild_in_binpkg) <(grep -vEe "$ebuild_filter" $ebuild_in_tree) > /dev/null || return 1
 	local ebuild_filter="^#|^[ 	]*$|(KEYWORDS|HOMEPAGE|DESCRIPTION)=\".*\""
+	#echo $1 >> ebuild.diff
+	#diff -u <(grep -vEe "$ebuild_filter" $ebuild_in_binpkg) <(grep -vEe "$ebuild_filter" $ebuild_in_tree) >> ebuild.diff || return 1
+	diff -q <(grep -vEe "$ebuild_filter" $ebuild_in_binpkg) <(grep -vEe "$ebuild_filter" $ebuild_in_tree) > /dev/null || return 1
 	# Print CPF and USE hash (SHA256 truncated to 128-bit)
 	echo -n "$(<$tmpdir/CATEGORY)/$(<$tmpdir/PF) "
 	sha256sum $tmpdir/USE | head -c 32
@@ -89,6 +93,7 @@ echo "Filtering binary packages (low version in slot * keyword)..." >&2
 ls `eix --binary -xl | awk -f $wd/eix-binpkgcleaner.awk` | sort > $tmpfile || e
 
 echo "Filtering binary packages (ebuild non-keyword update + duplicate USE binpkg)..." >&2
+#rm -vf ebuild.diff
 # To save packages win
 declare -A pkg_hashes
 while read -r; do
